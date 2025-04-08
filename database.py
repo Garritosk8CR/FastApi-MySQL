@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-url = ""
+url = "mysql+mysqlconnector://root:admin@localhost:3306/blogapplication"
 
 engine = create_engine(url)
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
