@@ -31,8 +31,15 @@ async def get_post(post_id: int, db: db_dependency):
     post = db.query(models.Post).filter(models.Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
-    return post   
+    return post
 
+@app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_post(post_id: int, db: db_dependency):
+    post = db.query(models.Post).filter(models.Post.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+    db.delete(post)
+    db.commit()   
 
 @app.post("/posts/", response_model=PostBase, status_code=status.HTTP_201_CREATED)
 async def create_post(post: PostBase, db: db_dependency):
