@@ -26,6 +26,13 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
+@app.post("/posts/", response_model=PostBase, status_code=status.HTTP_201_CREATED)
+async def create_post(post: PostBase, db: db_dependency):
+    new_post = models.Post(**post.dict())
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+    return new_post
 
 @app.post("/users/", response_model=UserBase, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserBase, db: db_dependency):
