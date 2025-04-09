@@ -26,6 +26,14 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
+@app.get("/posts/{post_id}", response_model=PostBase, status_code=status.HTTP_200_OK)
+async def get_post(post_id: int, db: db_dependency):
+    post = db.query(models.Post).filter(models.Post.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+    return post   
+
+
 @app.post("/posts/", response_model=PostBase, status_code=status.HTTP_201_CREATED)
 async def create_post(post: PostBase, db: db_dependency):
     new_post = models.Post(**post.dict())
